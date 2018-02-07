@@ -1,0 +1,7 @@
+import myModule
+
+print(myModule.fib(10))
+print(myModule.version())
+
+from flask import Flask
+app = Flask(__name__)
