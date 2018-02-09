@@ -60,7 +60,7 @@ BYTE * CscanFingerprint(char * fileName) {
 		printf("Ending template creation\n");
 
 	FILE *write_ptr;
-	write_ptr = fopen("test.txt","wb");  // w for write, b for binary
+	write_ptr = fopen(fileName,"wb");  // w for write, b for binary
 	fwrite(minBuffer,maxTemplateSize * sizeof(BYTE),1,write_ptr); // write 10 bytes from our buffer
 	
 	return minBuffer;
@@ -88,7 +88,8 @@ static PyObject * scanFingerprint(PyObject * self, PyObject * args) {
 	return Py_BuildValue("i", buffer);
 }
 static PyObject * matchFingerprints(PyObject * self, PyObject * args) {
-	char*f1, f2;
+	char*f1name, f2name;
+	BYTE * f1, f2;
 	// Continue here, implement loading fingerprint files
 	DWORD maxTemplateSize;
 	
@@ -98,10 +99,19 @@ static PyObject * matchFingerprints(PyObject * self, PyObject * args) {
 	f1 = (BYTE*)malloc(maxTemplateSize * sizeof(BYTE));
 
 	f2 = (BYTE*)malloc(maxTemplateSize * sizeof(BYTE));
+
+
 	printf("Fails here1?\n");
-	PyArg_ParseTuple(args, "ss", );
+	PyArg_ParseTuple(args, "ss", f1name, f2name);
+
+	FILE *fp1 = fopen(&f1name, "w+");
+	FILE *fp2 = fopen(&f2name, "w+");
+
+	fread(f1, maxTemplateSize * sizeof(BYTE), 1, fp1);
+	fread(f2, maxTemplateSize * sizeof(BYTE), 1, fp2);
+
 	printf("Fails here2\n");
-	BOOL matched  = CmatchFingerprints(&f1, &f2);
+	BOOL matched = CmatchFingerprints(f1, f2);
 	printf("Fails here3?\n");
 	return Py_BuildValue("i", matched);
 }
